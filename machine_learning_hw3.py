@@ -141,7 +141,6 @@ def sarsa_on_policy(q):
 				a = a_next
 			rewards[i] += reward_sum
 	rewards /= runs
-## need to think
 	avg_rewards = []
 	for i in range(9):
 		avg_rewards.append(np.mean(rewards[:i+1]))
@@ -170,13 +169,43 @@ def q_learning(q):
 				y = y_next
 			rewards[i] += reward_sum
 	rewards /= runs
-## need to think
 	avg_rewards = []
 	for i in range(9):
 		avg_rewards.append(np.mean(rewards[:i+1]))
 	for i in range(10, len(rewards)+1):
 		avg_rewards.append(np.mean(rewards[i-10:i]))
 	return avg_rewards
+
+def OptimalPath(q):
+	x = 0
+	y = 0
+	path = np.zeros([x_length, y_length]) - 1
+	end = 0
+	exist = np.zeros([x_length, y_length])
+	while (x != x_length -1 or y != 0) and end == 0:
+		a = max_q(x,y,q)
+		path[x][y] = a
+		if exist[x][y] == 1:
+			end = 1
+		exist[x][y] = 1
+		x,y,r = observe(x,y,a)
+	for j in range(y_length-1, -1, -1):
+		for i in range(x_length):
+			if i == x_length-1 and j == 0:
+				print("G ", end = "")
+				continue
+			a = path[i,j]
+			if a == -1:
+				print("0 ", end = "")
+			elif a == 0:
+				print("↑ ", end = "")
+			elif a == 1:
+				print("→ ", end = "")
+			elif a == 2:
+				print("↓ ", end = "")
+			elif a == 3:
+				print("← ", end = "")
+		print("")
 
 q = np.zeros([12,4,4])
 sarsa_rewards = sarsa_on_policy(q)
@@ -185,10 +214,15 @@ q_learning_rewards = q_learning(qq)
 
 plt.plot(range(len(sarsa_rewards)), sarsa_rewards, label="sarsa")
 plt.plot(range(len(q_learning_rewards)), q_learning_rewards, label="q-learning")
-#plt.ylim(-100,0)
 plt.legend(loc="lower right")
-plt.show()
 
+print("Sarsa method")
+OptimalPath(q)
+print("")
+print("Q-learning")
+OptimalPath(qq)
+
+plt.show()
 
 
 
