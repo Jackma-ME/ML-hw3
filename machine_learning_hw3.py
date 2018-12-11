@@ -26,10 +26,69 @@ def observe(x,y,a):
 	y = min(y_length - 1, y)
 	
 	if goal == 1:
-		return x,y,1
+		return x,y,500
 	elif x > 0 and x < x_length-1 and y == 0:
 		return 0,0,-100
 	return x,y,-1
+
+def valid_action(x,y,action,r):
+	inv = np.zeros([4])
+	a = 0
+	n = 3
+	inv[action] = 1
+	if x == 0:
+		n -= 1
+		inv[3] = 1
+	if y == 0:
+		n -= 1
+		inv[2] = 1
+	if x == x_length - 1:
+		n -= 1
+		inv[1] = 1
+	if y == y_length - 1:
+		n -= 1
+		inv[0] = 1
+	if n == 1:
+		for i in range(4):
+			if inv[i] == 0:
+				a = i
+				return a
+	elif n == 2:
+		if r < 0.2/2:
+			for i in range(4):
+				if inv[i] == 0:
+					a = i
+					return a
+		elif r > 0.2/2:
+			count = 0
+			for i in range(4):
+				if inv[i] == 0:
+					if count == 1:
+						a = i
+						return a
+					count += 1
+	elif n == 3:
+		if r < 0.2/3:
+			for i in range(4):
+				if inv[i] == 0:
+					a = i
+					return a
+		elif r > 0.2/3 and r < 2*0.2/3:
+			count = 0
+			for i in range(4):
+				if inv[i] == 0:
+					if count == 1:
+						a = i
+						return a
+					count += 1
+		elif r > 2*0.2/3:
+			count = 0
+			for i in range(4):
+				if inv[i] == 0:
+					if count == 2:
+						a = i
+						return a
+					count += 1
 
 def epsilon_policy(x,y,q,eps):
 	t = random.randint(0,3)
@@ -43,7 +102,12 @@ def epsilon_policy(x,y,q,eps):
 				q_max = q[x][y][i]
 				a_max = i
 		a = a_max
-	return a
+	ran = random.random()
+	if ran < 0.2:
+		a = valid_action(x,y,a,ran)
+		return a
+	else:
+		return a 
 
 def max_q(x,y,q):
 	q_max = q[x][y][0]
@@ -121,7 +185,7 @@ q_learning_rewards = q_learning(qq)
 
 plt.plot(range(len(sarsa_rewards)), sarsa_rewards, label="sarsa")
 plt.plot(range(len(q_learning_rewards)), q_learning_rewards, label="q-learning")
-plt.ylim(-100,0)
+#plt.ylim(-100,0)
 plt.legend(loc="lower right")
 plt.show()
 
