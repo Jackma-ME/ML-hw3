@@ -12,9 +12,7 @@ def observe(x,y,a,mod = 1):
 	if mod == 1:
 		ran = random.random()
 		if ran < 0.2:
-			#a = valid_action(x,y,a,ran)
-			ran2 = random.randint(1,3)
-			a = (a + ran2) % 4
+			a = valid_action(x,y,a,ran)
 	goal = 0
 	if x == x_length - 1 and y == 0:
 		goal = 1
@@ -122,7 +120,7 @@ def max_q(x,y,q):
 
 ## sarsa on-policy
 def sarsa_on_policy(q):
-	runs = 20
+	runs = 500
 	rewards = np.zeros([500])
 	for j in range(runs):
 		for i in range(500):
@@ -151,7 +149,7 @@ def sarsa_on_policy(q):
 
 ## Q-learning
 def q_learning(q):
-	runs = 20
+	runs = 500
 	rewards = np.zeros([500])
 	for j in range(runs):
 		for i in range(500):
