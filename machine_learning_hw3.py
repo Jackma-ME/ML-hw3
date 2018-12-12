@@ -8,13 +8,13 @@ gamma = 0.95
 x_length = 12
 y_length = 4
 
-def observe(x,y,a):
-'''
-	ran = random.random()
-	if ran < 0.2:
-		ran2 = random.randint(1,3)
-		a = (a + ran2) % 4
-'''
+def observe(x,y,a,mod = 1):
+	if mod == 1:
+		ran = random.random()
+		if ran < 0.2:
+			#a = valid_action(x,y,a,ran)
+			ran2 = random.randint(1,3)
+			a = (a + ran2) % 4
 	goal = 0
 	if x == x_length - 1 and y == 0:
 		goal = 1
@@ -32,7 +32,7 @@ def observe(x,y,a):
 	y = min(y_length - 1, y)
 	
 	if goal == 1:
-		return x,y,1
+		return x,y,500
 	elif x > 0 and x < x_length-1 and y == 0:
 		return 0,0,-100
 	return x,y,-1
@@ -109,14 +109,6 @@ def epsilon_policy(x,y,q,eps):
 				a_max = i
 		a = a_max
 	return a
-'''
-	ran = random.random()
-	if ran < 0.2:
-		a = valid_action(x,y,a,ran)
-		return a
-	else:
-		return a
-''' 
 
 def max_q(x,y,q):
 	q_max = q[x][y][0]
@@ -197,7 +189,7 @@ def OptimalPath(q):
 		if exist[x][y] == 1:
 			end = 1
 		exist[x][y] = 1
-		x,y,r = observe(x,y,a)
+		x,y,r = observe(x,y,a,2)
 	for j in range(y_length-1, -1, -1):
 		for i in range(x_length):
 			if i == x_length-1 and j == 0:
