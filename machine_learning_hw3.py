@@ -120,7 +120,7 @@ def max_q(x,y,q):
 
 ## sarsa on-policy
 def sarsa_on_policy(q):
-	runs = 500
+	runs = 1000
 	rewards = np.zeros([500])
 	for j in range(runs):
 		for i in range(500):
@@ -149,7 +149,7 @@ def sarsa_on_policy(q):
 
 ## Q-learning
 def q_learning(q):
-	runs = 500
+	runs = 1000
 	rewards = np.zeros([500])
 	for j in range(runs):
 		for i in range(500):
@@ -206,6 +206,21 @@ def OptimalPath(q):
 				print("← ", end = "")
 		print("")
 
+def testing(q):
+	rewards = np.zeros([500])
+	for i in range(500):
+		reward_sum = 0
+		x = 0
+		y = 0
+		while True:
+			a = max_q(x,y,q)
+			x,y,r = observe(x,y,a,2)
+			reward_sum += r
+			if x == x_length - 1 and y == 0:
+				break
+		rewards[i] += reward_sum
+	return rewards
+
 q = np.zeros([12,4,4])
 sarsa_rewards = sarsa_on_policy(q)
 qq = np.zeros([12,4,4])
@@ -220,8 +235,14 @@ OptimalPath(q)
 print("")
 print("Q-learning")
 OptimalPath(qq)
-
 plt.show()
+
+re1 = testing(q)
+plt.plot(range(len(re1)), re1, label="sarsa")
+re2 = testing(qq)
+plt.plot(range(len(re2)), re2, label="q-learning")
+plt.legend(loc="lower right")
+#plt.show()
 
 
 
